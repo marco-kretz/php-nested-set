@@ -102,6 +102,24 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(6, $rootNode->getRight());
     }
 
+    public function testBigNestedSet()
+    {
+        $rootNode = new Node('root');
+        $this->nestedSet->addRoot($rootNode);
+
+        for ($i = 0; $i < 5; $i++) {
+            $levelOneNode = new Node("level1_c$i");
+            $this->nestedSet->addNode($rootNode, $levelOneNode);
+
+            for ($j = 0; $j < 3; $j++) {
+                $levelTwoNode = new Node("level2_c$i.$j");
+                $this->nestedSet->addNode($levelOneNode, $levelTwoNode);
+            }
+        }
+
+        $this->assertEquals(42, $rootNode->getRight());
+    }
+
     public function testGetSubNodesSimple()
     {
         $rootNode = new Node('root');
