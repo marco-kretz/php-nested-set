@@ -97,7 +97,7 @@ class NestedSet
         foreach ($this->nodes as $node) {
             if ($node instanceof Node) {
                 if ($node->getLeft() > $parent->getLeft() && $node->getRight() < $parent->getRight()) {
-                    array_push($subNodes, $node);
+                    $subNodes[] = $node;
                 }
             }
         }
