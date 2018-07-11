@@ -42,7 +42,7 @@ class NestedSet
     }
 
     /**
-     * Adds a new Node under the given parent Node.
+     * Adds a new node under the given parent Node.
      *
      * @param Node $parent
      * @param Node $node
@@ -52,7 +52,7 @@ class NestedSet
      * @throws NoRootDefinedException
      * @throws NodeNotInSetException
      */
-    public function addNode(Node $parent, Node $node)
+    public function addNode(Node $parent, Node $node): Node
     {
         if (empty($this->root)) {
             throw new NoRootDefinedException('First add a root via addRoot()!');
@@ -84,13 +84,41 @@ class NestedSet
     }
 
     /**
+     * Get a single node by its name.
+     *
+     * @param string $name
+     *
+     * @return null|Node
+     */
+    public function getNode(string $name): Node
+    {
+        foreach ($this->nodes as $node) {
+            if ($node instanceof Node && $node->getName() === $name) {
+                return $node;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove a node including its sub-nodes.
+     *
+     * @param Node $node
+     */
+    public function removeNode(Node $node)
+    {
+        // TODO: Implement :)
+    }
+
+    /**
      * Get all sub Nodes of a given Node, ignoring level.
      *
      * @param Node $parent
      *
      * @return array
      */
-    public function getSubNodes(Node $parent)
+    public function getSubNodes(Node $parent): array
     {
         $subNodes = [];
 
@@ -106,9 +134,9 @@ class NestedSet
     }
 
     /**
-     *  Clear NestedSet, removing all Nodes.
+     *  Clear NestedSet, removing all nodes.
      */
-    public function clear()
+    public function clear(): void
     {
         $this->nodes = [];
     }
@@ -116,7 +144,7 @@ class NestedSet
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $s = '';
         foreach ($this->nodes as $node) {
