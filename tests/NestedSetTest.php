@@ -12,16 +12,25 @@ final class NestedSetTest extends TestCase
      */
     private $nestedSet;
 
+    /**
+     * We need a NestedSet instance for every test method.
+     */
     public function setUp()
     {
         $this->nestedSet = new NestedSet();
     }
 
+    /**
+     * Safely remove the NestedSet used for the current test method.
+     */
     public function tearDown()
     {
         unset($this->nestedSet);
     }
 
+    /**
+     * Test, if we can add a root node.
+     */
     public function testCanAddRoot()
     {
         $rootNode = new Node('root');
@@ -30,6 +39,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals($rootNode, $testNode);
     }
 
+    /**
+     * Test, if we can add a single child node to the root node.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testCanAddOneChildToRoot()
     {
         $rootNode = new Node('root');
@@ -43,6 +58,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(4, $rootNode->getRight());
     }
 
+    /**
+     * Test, if we can add two child nodes to the root node.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testCanAddSecondChildToRoot()
     {
         $rootNode = new Node('root');
@@ -61,6 +82,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(6, $rootNode->getRight());
     }
 
+    /**
+     * Test, if we can add three child nodes to the root node.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testCanAddThirdChildToRoot()
     {
         $nestedSet = new NestedSet();
@@ -84,6 +111,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(8, $rootNode->getRight());
     }
 
+    /**
+     * Test, if we can add a child node to another child node.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testAddNodeToChild()
     {
         $rootNode = new Node('root');
@@ -102,6 +135,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(6, $rootNode->getRight());
     }
 
+    /**
+     * Let's get big and test a 21-elements sized set.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testBigNestedSet()
     {
         $rootNode = new Node('root');
@@ -120,6 +159,12 @@ final class NestedSetTest extends TestCase
         $this->assertEquals(42, $rootNode->getRight());
     }
 
+    /**
+     * Test, if we can get subnodes within a simple structure.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testGetSubNodesSimple()
     {
         $rootNode = new Node('root');
@@ -134,12 +179,24 @@ final class NestedSetTest extends TestCase
         $this->assertEquals($childNode, $subNodes[0]);
     }
 
+    /**
+     * Test, if an exception is thrown when trying to add a node to a root-less set.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testThrowsNoRootDefinedException()
     {
         $this->expectException(NoRootDefinedException::class);
         $this->nestedSet->addNode(new Node('n1'), new Node('n2'));
     }
 
+    /**
+     * Test, if an exception is thrown when trying to add a node to an not yet added node.
+     *
+     * @throws NoRootDefinedException
+     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     */
     public function testThrowsNodeNotInSetException()
     {
         $rootNode = new Node('root');
