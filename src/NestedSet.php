@@ -138,6 +138,10 @@ class NestedSet
      */
     public function clear(): void
     {
+        unset($this->root);
+        unset($this->nodes);
+
+        $this->root = null;
         $this->nodes = [];
     }
 

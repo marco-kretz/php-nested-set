@@ -18,6 +18,7 @@ final class NestedSetTest extends TestCase
     public function setUp()
     {
         $this->nestedSet = new NestedSet();
+        $this->nestedSet->clear();
     }
 
     /**
@@ -25,7 +26,7 @@ final class NestedSetTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->nestedSet);
+        $this->nestedSet->clear();
     }
 
     /**
