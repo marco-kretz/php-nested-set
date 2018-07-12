@@ -222,4 +222,24 @@ final class NestedSetTest extends TestCase
 
         $this->assertEquals(34, $rootNode->getRight());
     }
+
+    /**
+     * Testm if we can iterate over a simple NestedSet.
+     */
+    public function testIteratorSimple()
+    {
+        $rootNode = new Node('0');
+        $this->nestedSet->addRoot($rootNode);
+
+        $childNode = new Node('1');
+        $this->nestedSet->addNode($rootNode, $childNode);
+
+        $childNodeTwo = new Node('2');
+        $this->nestedSet->addNode($rootNode, $childNodeTwo);
+
+        foreach ($this->nestedSet as $index => $node) {
+            $this->assertTrue($node instanceof Node);
+            $this->assertEquals((string) $index, $node->getName());
+        }
+    }
 }

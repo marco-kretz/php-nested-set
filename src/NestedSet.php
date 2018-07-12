@@ -7,7 +7,7 @@ namespace MarcoKretz\NestedSet;
  *
  * @author Marco Kretz <mk@marco-kretz.de>
  */
-class NestedSet
+class NestedSet implements \Iterator
 {
     /**
      * @var Node
@@ -18,6 +18,11 @@ class NestedSet
      * @var array
      */
     private $nodes = [];
+
+    /**
+     * @var int
+     */
+    private $pointer = 0;
 
     /**
      * @param Node $node
@@ -123,6 +128,9 @@ class NestedSet
             }
         }
 
+        // Reindex array
+        $this->nodes = array_values($this->nodes);
+
         return $node;
     }
 
@@ -197,5 +205,55 @@ class NestedSet
         }
 
         return $s;
+    }
+
+    /**
+     * Return the current element.
+     *
+     * @return Node
+     */
+    public function current(): Node
+    {
+        return $this->nodes[$this->pointer];
+    }
+
+    /**
+     * Move forward to next element.
+     *
+     * @return void
+     */
+    public function next(): void
+    {
+        ++$this->pointer;
+    }
+
+    /**
+     * Return the key of the current element.
+     *
+     * @return int
+     */
+    public function key(): int
+    {
+        return $this->pointer;
+    }
+
+    /**
+     * Checks if current position is valid.
+     *
+     * @return bool
+     */
+    public function valid(): bool
+    {
+        return isset($this->nodes[$this->pointer]);
+    }
+
+    /**
+     * Rewind the Iterator to the first element.
+     *
+     * @return void
+     */
+    public function rewind(): void
+    {
+        $this->pointer = 0;
     }
 }
