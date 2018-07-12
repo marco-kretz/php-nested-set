@@ -6,6 +6,11 @@ This is my own implementation of the ["Nested Set Model"](https://en.wikipedia.o
 
 It has not database connection, yet. Will implement a mysql-synchronization feature soon!
 
+## Requirements
+
+- composer
+- PHP >= 7.1
+
 ## Node
 
 A Node represents a single node (or container) within the NestedSet. It's uniquely identified by a name.
@@ -48,7 +53,7 @@ for ($rootChildren as $rootChild) {
 }
 ```
 
-### Testing
+## Testing
 
 `composer test` or simply `phpunit`
 
