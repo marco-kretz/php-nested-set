@@ -2,9 +2,6 @@
 
 namespace MarcoKretz\NestedSet;
 
-use MarcoKretz\NestedSet\Exceptions\NodeNotInSetException;
-use MarcoKretz\NestedSet\Exceptions\NoRootDefinedException;
-
 /**
  * Implementation of the "Nested Set Model"
  *
@@ -25,9 +22,9 @@ class NestedSet
     /**
      * @param Node $node
      *
-     * @return Node
+     * @return null|Node
      */
-    public function addRoot(Node $node) : Node
+    public function addRoot(Node $node) : ?Node
     {
         if (empty($this->root) && empty($this->nodes)) {
             $node->setLeft(1);
@@ -36,9 +33,11 @@ class NestedSet
 
             $this->root = $node;
             $this->nodes[] = $node;
+
+            return $node;
         }
 
-        return $node;
+        return null;
     }
 
     /**
@@ -47,19 +46,12 @@ class NestedSet
      * @param Node $parent
      * @param Node $node
      *
-     * @return Node
-     *
-     * @throws NoRootDefinedException
-     * @throws NodeNotInSetException
+     * @return null|Node
      */
-    public function addNode(Node $parent, Node $node): Node
+    public function addNode(Node $parent, Node $node): ?Node
     {
-        if (empty($this->root)) {
-            throw new NoRootDefinedException('First add a root via addRoot()!');
-        }
-
-        if (!in_array($parent, $this->nodes)) {
-            throw new NodeNotInSetException('Add the parent via addNode() first!');
+        if (empty($this->root) || !$this->exists($parent) || $this->exists($node)) {
+            return null;
         }
 
         foreach ($this->nodes as $currentNode) {
@@ -86,11 +78,11 @@ class NestedSet
     /**
      * Get a single node by its name.
      *
-     * @param string $name
+     * @param string $name The node's name
      *
-     * @return null|Node
+     * @return null|Node Node found, else null
      */
-    public function getNode(string $name): Node
+    public function getNode(string $name): ?Node
     {
         foreach ($this->nodes as $node) {
             if ($node instanceof Node && $node->getName() === $name) {
@@ -105,27 +97,54 @@ class NestedSet
      * Remove a node including its sub-nodes.
      *
      * @param Node $node
+     *
+     * @return null|Node Removed node on success, else null
      */
-    public function removeNode(Node $node)
+    public function removeNode(Node $node): ?Node
     {
-        // TODO: Implement :)
+        if (!$this->exists($node)) {
+            return null;
+        }
+
+        // Remove $node with all its sub-nodes
+        $nodesToRemove = array_merge([$node], $this->getSubNodes($node));
+        $this->nodes = array_diff($this->nodes, $nodesToRemove);
+
+        // Recalculate left and right values
+        $width = $node->getRight() - $node->getLeft() + 1;
+        foreach ($this->nodes as $currentNode) {
+            if ($currentNode instanceof Node) {
+                if ($currentNode->getLeft() > $node->getRight()) {
+                    $currentNode->setLeft($currentNode->getLeft() - $width);
+                }
+                if ($currentNode->getRight() > $node->getRight()) {
+                    $currentNode->setRight($currentNode->getRight() - $width);
+                }
+            }
+        }
+
+        return $node;
     }
 
     /**
-     * Get all sub Nodes of a given Node, ignoring level.
+     * Get all sub-nodes for a given node.
      *
      * @param Node $parent
      *
-     * @return array
+     * @return null|array
      */
-    public function getSubNodes(Node $parent): array
+    public function getSubNodes(Node $parent): ?array
     {
+        if (!$this->exists($parent)) {
+            return null;
+        }
+
         $subNodes = [];
 
-        foreach ($this->nodes as $node) {
+        foreach ($this->nodes as $index => $node) {
             if ($node instanceof Node) {
                 if ($node->getLeft() > $parent->getLeft() && $node->getRight() < $parent->getRight()) {
-                    $subNodes[] = $node;
+                    $subNodes[$index] = $node;
                 }
             }
         }
@@ -143,6 +162,24 @@ class NestedSet
 
         $this->root = null;
         $this->nodes = [];
+    }
+
+    /**
+     * Check if a node already exists.
+     *
+     * @param Node $node
+     *
+     * @return bool
+     */
+    public function exists(Node $node): bool
+    {
+        foreach ($this->nodes as $currentNode) {
+            if ($currentNode instanceof Node && $currentNode->getName() === $node->getName()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

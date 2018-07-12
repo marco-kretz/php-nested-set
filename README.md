@@ -31,5 +31,4 @@ for ($rootChildren as $rootChild) {
 ## Todo
 
 - Add database sync
-- Remove node
 - more?

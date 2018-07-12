@@ -1,6 +1,5 @@
 <?php
 
-use MarcoKretz\NestedSet\Exceptions\NoRootDefinedException;
 use MarcoKretz\NestedSet\NestedSet;
 use MarcoKretz\NestedSet\Node;
 use PHPUnit\Framework\TestCase;
@@ -41,9 +40,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Test, if we can add a single child node to the root node.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testCanAddOneChildToRoot()
     {
@@ -60,9 +56,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Test, if we can add two child nodes to the root node.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testCanAddSecondChildToRoot()
     {
@@ -84,9 +77,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Test, if we can add three child nodes to the root node.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testCanAddThirdChildToRoot()
     {
@@ -113,9 +103,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Test, if we can add a child node to another child node.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testAddNodeToChild()
     {
@@ -137,9 +124,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Let's get big and test a 21-elements sized set.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testBigNestedSet()
     {
@@ -161,9 +145,6 @@ final class NestedSetTest extends TestCase
 
     /**
      * Test, if we can get subnodes within a simple structure.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
     public function testGetSubNodesSimple()
     {
@@ -176,34 +157,69 @@ final class NestedSetTest extends TestCase
         $subNodes = $this->nestedSet->getSubNodes($rootNode);
 
         $this->assertEquals(1, count($subNodes));
-        $this->assertEquals($childNode, $subNodes[0]);
+        $this->assertEquals($childNode, array_pop($subNodes));
     }
 
     /**
-     * Test, if an exception is thrown when trying to add a node to a root-less set.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
+     * Test, if adding a node to a non-existing node returns null.
      */
-    public function testThrowsNoRootDefinedException()
+    public function testAddingNodeToNonExistingParentNoRoot()
     {
-        $this->expectException(NoRootDefinedException::class);
-        $this->nestedSet->addNode(new Node('n1'), new Node('n2'));
+        $this->assertNull($this->nestedSet->addNode(new Node('n1'), new Node('n2')));
     }
 
     /**
      * Test, if an exception is thrown when trying to add a node to an not yet added node.
-     *
-     * @throws NoRootDefinedException
-     * @throws \MarcoKretz\NestedSet\Exceptions\NodeNotInSetException
      */
-    public function testThrowsNodeNotInSetException()
+    public function testAddingNodeToNonExistingParentWithRoot()
     {
         $rootNode = new Node('root');
         $this->nestedSet->addRoot($rootNode);
 
-        $this->expectException(\MarcoKretz\NestedSet\Exceptions\NodeNotInSetException::class);
+        $this->assertNull($this->nestedSet->addNode(new Node('n1'), new Node('n2')));
+    }
 
-        $this->nestedSet->addNode(new Node('n1'), new Node('n2'));
+    /**
+     * Test, if we can remove a simple node.
+     */
+    public function testRemoveSimpleNode()
+    {
+        $rootNode = new Node('root');
+        $this->nestedSet->addRoot($rootNode);
+
+        $childNode = new Node('child');
+        $this->nestedSet->addNode($rootNode, $childNode);
+
+        $this->assertEquals(4, $rootNode->getRight());
+
+        $removedNode = $this->nestedSet->removeNode($childNode);
+
+        $this->assertEquals($childNode, $removedNode);
+        $this->assertEquals(2, $rootNode->getRight());
+    }
+
+    /**
+     * Test, if we can remove multiple node.
+     */
+    public function testRemoveNodes()
+    {
+        $rootNode = new Node('root');
+        $this->nestedSet->addRoot($rootNode);
+
+        for ($i = 0; $i < 5; $i++) {
+            $levelOneNode = new Node("level1_c$i");
+            $this->nestedSet->addNode($rootNode, $levelOneNode);
+
+            for ($j = 0; $j < 3; $j++) {
+                $levelTwoNode = new Node("level2_c$i.$j");
+                $this->nestedSet->addNode($levelOneNode, $levelTwoNode);
+            }
+
+            if (3 === $i) {
+                $this->nestedSet->removeNode($levelOneNode);
+            }
+        }
+
+        $this->assertEquals(34, $rootNode->getRight());
     }
 }
