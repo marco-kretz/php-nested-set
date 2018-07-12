@@ -128,12 +128,14 @@ class NestedSet
 
     /**
      * Get all sub-nodes for a given node.
+     * The array indices are the actual indices in the NestedSet nodes-array. Reindex possible.
      *
      * @param Node $parent
+     * @param bool $reindex Wether to reindex the array or not
      *
      * @return null|array
      */
-    public function getSubNodes(Node $parent): ?array
+    public function getSubNodes(Node $parent, bool $reindex = false): ?array
     {
         if (!$this->exists($parent)) {
             return null;
@@ -149,7 +151,7 @@ class NestedSet
             }
         }
 
-        return $subNodes;
+        return ($reindex ? array_values($subNodes) : $subNodes);
     }
 
     /**
