@@ -22,7 +22,7 @@ $anotherNode = new Node('anotherNode);
 
 The heart of this library. It manages a NestedSet-Model and uses `Node` as nodes (containers).
 
-###Usage
+### Usage
 
 ```PHP
 $ns = new NestedSet();
