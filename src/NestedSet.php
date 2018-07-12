@@ -7,7 +7,7 @@ namespace MarcoKretz\NestedSet;
  *
  * @author Marco Kretz <mk@marco-kretz.de>
  */
-class NestedSet implements \Iterator
+class NestedSet implements \Iterator, \Serializable
 {
     /**
      * @var Node
@@ -255,5 +255,35 @@ class NestedSet implements \Iterator
     public function rewind(): void
     {
         $this->pointer = 0;
+    }
+
+    /**
+     * String representation of object
+     *
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->nodes,
+            $this->root,
+            $this->pointer,
+        ]);
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @param string $serialized <p>
+     *
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->nodes,
+            $this->root,
+            $this->pointer
+            ) = unserialize($serialized);
     }
 }

@@ -16,6 +16,8 @@ It has not database connection, yet. Will implement a mysql-synchronization feat
 A Node represents a single node (or container) within the NestedSet. It's uniquely identified by a name.
 It can safely be extended (e.g. by a payload attribute) and will still work with the NestedSet.
 
+There is also an extended `Node` called `PayloadNode` which can hold arbitrary, serializable data.
+
 ### Usage
 
 ```php
@@ -27,6 +29,8 @@ $anotherNode = new Node('anotherNode);
 
 The heart of this library. It manages a NestedSet-Model and uses `Node` as nodes (containers).
 A NestedSet is also an Iterator, so you can simply iterate over it with Nodes as values.
+Furthermore it's possible to serialize single Nodes or the whole NestedSet.
+
 
 ### Usage
 
@@ -63,6 +67,12 @@ for ($rootChildren as $rootChild) {
 for ($ns as $index => $node) {
     print($node);
 }
+
+// Serialization
+$serialized = serialize($ns);
+$nsCopy = unserialize($serialized);
+
+print($ns === $nsCopy); // true
 ```
 
 ## Testing

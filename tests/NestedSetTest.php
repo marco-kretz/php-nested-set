@@ -4,6 +4,11 @@ use MarcoKretz\NestedSet\NestedSet;
 use MarcoKretz\NestedSet\Node;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * NestedSet - Test Suite
+ *
+ * @author Marco Kretz <mk@marco-kretz.de>
+ */
 final class NestedSetTest extends TestCase
 {
     /**
@@ -241,5 +246,22 @@ final class NestedSetTest extends TestCase
             $this->assertTrue($node instanceof Node);
             $this->assertEquals((string) $index, $node->getName());
         }
+    }
+
+    public function testCanGetSerialized()
+    {
+        $rootNode = new Node('0');
+        $this->nestedSet->addRoot($rootNode);
+
+        $childNode = new Node('1');
+        $this->nestedSet->addNode($rootNode, $childNode);
+
+        $childNodeTwo = new Node('2');
+        $this->nestedSet->addNode($rootNode, $childNodeTwo);
+
+        $serialized = serialize($this->nestedSet);
+        $unserialzed = unserialize($serialized);
+
+        $this->assertEquals($this->nestedSet, $unserialzed);
     }
 }

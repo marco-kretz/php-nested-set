@@ -7,27 +7,27 @@ namespace MarcoKretz\NestedSet;
  *
  * @author Marco Kretz <mk@marco-kretz.de>
  */
-class Node
+class Node implements \Serializable
 {
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var Node
      */
-    private $parent;
+    protected $parent;
 
     /**
      * @var int
      */
-    private $left;
+    protected $left;
 
     /**
      * @var int
      */
-    private $right;
+    protected $right;
 
     /**
      * @param string $name
@@ -107,5 +107,37 @@ class Node
     public function __toString()
     {
         return "{ name: $this->name, left: $this->left, right: $this->right }";
+    }
+
+    /**
+     * String representation of object
+     *
+     * @return string the string representation of the object or null
+     */
+    public function serialize(): string
+    {
+        return serialize([
+            $this->name,
+            $this->parent,
+            $this->left,
+            $this->right,
+        ]);
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @param string $serialized <p>
+     *
+     * @return void
+     */
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->name,
+            $this->parent,
+            $this->left,
+            $this->right
+            ) = unserialize($serialized);
     }
 }
