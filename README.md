@@ -26,30 +26,42 @@ $anotherNode = new Node('anotherNode);
 ## NestedSet
 
 The heart of this library. It manages a NestedSet-Model and uses `Node` as nodes (containers).
+A NestedSet is also an Iterator, so you can simply iterate over it with Nodes as values.
 
 ### Usage
 
 ```PHP
 $ns = new NestedSet();
 
+// Define nodes
 $rootNode = new Node('root');
 $childNode1 = new Node('child1');
 $childNode2 = new Node('child2');
 
-$ns->addRoot($rootNode); // addNode will throw an exception if no root is defined!
-$ns->addNode($rootNode, $childNode1); // addNode will throw an exception if the given parent was not added
+// Set root node
+$ns->addRoot($rootNode);
+
+// Add nodes
+$ns->addNode($rootNode, $childNode1);
 $ns->addNode($rootNode, $childNode2);
 
 print($ns);
 
+// Remove node
 $ns->removeNode($childNode2);
 
 print($ns);
 
+// Retrieve sub-nodes
 $rootChildren = $ns->getSubNodes($rootNode);
 
 for ($rootChildren as $rootChild) {
     print($rootChild);
+}
+
+// Iterate over NestedSet
+for ($ns as $index => $node) {
+    print($node);
 }
 ```
 
