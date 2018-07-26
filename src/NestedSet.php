@@ -46,6 +46,14 @@ class NestedSet implements \Iterator, \Serializable
     }
 
     /**
+     * @return Node|null
+     */
+    public function getRoot() : ?Node
+    {
+        return $this->root;
+    }
+
+    /**
      * Adds a new node under the given parent Node.
      *
      * @param Node $parent
